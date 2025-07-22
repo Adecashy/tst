@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up</title>
+
+
+    <style>
+        .container {
+            width: 90vw;
+            max-width: 500px;
+            margin: 4rem auto;
+            border: 1px solid;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .container div {
+            display: flex;
+            margin-bottom: 5px;
+            flex-direction: column;
+
+        }
+
+        input,
+        button {
+            display: block;
+            padding: 0.5rem 1rem;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            width: 100%;
+            border: none;
+            margin-top: 1rem;
+
+        }
+
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        #error-message{
+            font-size: 13px;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <form id="signup-form">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="signup-email" placeholder="joe@gmail.com">
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="signup-password" placeholder="********">
+            </div>
+            <button id="signup-btn">Create Account</button>
+        </form>
+        <p id="error-message"></p>
+
+        <p>Already have an account? <a href="./signin.html">Login</a></p>
+    </div>
+
+
+    <script type="module">
+        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"
+        import { app } from "./firebase.js"
+
+        const auth = getAuth(app)
+
+        // ELEMENTS
+        const signUpForm = document.getElementById("signup-form")
+        const signUpEmail = document.getElementById("signup-email")
+        const signUpPassword = document.getElementById("signup-password")
+        const signUpButtonEl = document.getElementById("signup-btn")
+        const errorMessageEl = document.getElementById("error-message")
+        
+        // SIGN UP
+        const signUp = async () => {
+            signUpButtonEl.disabled = true
+            signUpButtonEl.textContent = "Loading..."
+            try {
+                const userCredentials = await createUserWithEmailAndPassword(auth, signUpEmail.value, signUpPassword.value)
+                console.log(userCredentials.user)
+                if(userCredentials.user){
+                    sendEmailVerification(userCredentials.user)
+                }
+            } catch (error) {
+                console.log(error)
+                if(error.code == "auth/email-already-in-use"){
+                    errorMessageEl.textContent = "Enmail already exists."
+                } else if(error.code == "auth/password-does-not-meet-requirements") {
+                    errorMessageEl.textContent = "Password must be 6 characters"
+                }else {
+                    errorMessageEl.textContent = "Something went wrong"
+                }
+            } finally{
+                signUpButtonEl.disabled = false
+                signUpButtonEl.textContent = "Create Account"
+            }
+        }
+
+        signUpForm.addEventListener("submit", (e)=>{
+            e.preventDefault()
+            signUp()
+        })
+
+
+    </script>
+</body>
+
+</html>

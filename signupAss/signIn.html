@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .signin{
+            margin: auto;
+            width: 500px;
+            /* border: 1px solid; */
+        }
+        button, input{
+            padding: 5px;   
+            margin-top: 5px;
+            width: 100%;
+        }
+        button{
+            padding: 10px 5px;
+            width: 100%;
+            background: green;
+            border: none;
+            margin-top: 5px;
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+        }
+        .display{
+            margin-left: 600px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="signin">
+        <h1>Welcome, SIGN IN</h1>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="sign-in">Sign In</button>   
+    </div>
+        <p>New here? <a href="./index.html">Sign up</a></p>
+
+
+    <div id="display" class="display">
+
+    </div>
+
+    <script type="module">
+        const emailVal = document.getElementById("email")
+        const passwordVal = document.getElementById("password")
+        const signinEl = document.getElementById("sign-in")
+        const displayEl = document.getElementById("display")
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJsI_r80ZRqG80jxss5dQcvGFs0G6w-Tc",
+            authDomain: "jumia-8f827.firebaseapp.com",
+            projectId: "jumia-8f827",
+            storageBucket: "jumia-8f827.firebasestorage.app",
+            messagingSenderId: "506048228924",
+            appId: "1:506048228924:web:37d104efade80ba6225d39"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app)
+
+        const signin = async () =>{
+            displayEl.innerHTML = `<p>signing in ...</p>`
+            try {
+                const userInfo = await signInWithEmailAndPassword(auth, emailVal.value, passwordVal.value)
+                console.log(userInfo);
+                window.location.href = `./dashboard.html?dashboard`
+            } catch (error) {
+                console.log(error);
+                alert("invalid user")
+            }finally{
+                console.log("DONE!");
+                displayEl.style.display = "none"
+            }
+        }
+
+        signinEl.addEventListener("click", signin)
+</script>
+</body>
+</html>

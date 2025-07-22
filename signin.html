@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+
+
+    <style>
+        .container {
+            width: 90vw;
+            max-width: 500px;
+            margin: 4rem auto;
+            border: 1px solid;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .container div {
+            display: flex;
+            margin-bottom: 5px;
+            flex-direction: column;
+
+        }
+
+        input,
+        button {
+            display: block;
+            padding: 0.5rem 1rem;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            width: 100%;
+            border: none;
+            margin-top: 1rem;
+
+        }
+
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        #error-message{
+            font-size: 13px;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <form id="signin-form">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="signin-email" placeholder="joe@gmail.com">
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="signin-password" placeholder="********">
+            </div>
+            <button id="signin-btn">Login</button>
+        </form>
+        <p id="error-message"></p>
+
+        <p>Are tyou new Here? <a href="./signup.html">Create an account</a></p>
+    </div>
+
+
+    <script type="module">
+        import { getAuth, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"
+        import { app } from "./firebase.js"
+
+        const auth = getAuth(app)
+
+        // ELEMENTS
+        const signInForm = document.getElementById("signin-form")
+        const signinEmail = document.getElementById("signin-email")
+        const signinPassword = document.getElementById("signin-password")
+        const signinButtonEl = document.getElementById("signin-btn")
+        const errorMessageEl = document.getElementById("error-message")
+        
+        // SIGN UP
+        const signIn = async () => {
+            signinButtonEl.disabled = true
+            signinButtonEl.textContent = "Loading..."
+            try {
+                const userCredentials = await signInWithEmailAndPassword(auth, signinEmail.value, signinPassword.value)
+                console.log(userCredentials.user.emailVerified)
+                if(userCredentials.user && userCredentials.user.emailVerified){
+                window.location.href = "./dashboard.html"
+                } else{
+                    alert("Kindly verify your email")
+                }
+            } catch (error) {
+                console.log(error)
+                if(error.code == "auth/invalid-credential"){
+                    errorMessageEl.textContent = "Email or password is incorrect"
+                } else {
+                    errorMessageEl.textContent = "Something went wrong"
+                }
+                
+            } finally{
+                signinButtonEl.disabled = false
+                signinButtonEl.textContent = "Login"
+            }
+        }
+
+        signInForm.addEventListener("submit", (e)=>{
+            e.preventDefault()
+            signIn()
+        })
+
+
+    </script>
+</body>
+
+</html>

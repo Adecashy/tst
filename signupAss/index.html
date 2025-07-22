@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .signup{
+            /* border: 1px solid; */
+            margin: auto;
+            width: 500px;
+        }
+        input{
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button{
+            padding: 10px 5px;
+            width: 100%;
+            background: green;
+            border: none;
+            margin-top: 5px;
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+        }
+        .display{
+            margin-left: 600px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup">
+        <h1>SIGN UP</h1>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="sign-up">Sign Up</button>
+    </div>
+    <p>Already have an account? <a href="./signIn.html">Login</a></p>
+
+    <div class="display" id="display">
+
+    </div>
+
+
+    <script type="module">
+        const displayEl = document.getElementById("display")
+        const emailVal = document.getElementById("email")
+        const passwordVal = document.getElementById("password")
+        const signupEl = document.getElementById("sign-up")
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJsI_r80ZRqG80jxss5dQcvGFs0G6w-Tc",
+            authDomain: "jumia-8f827.firebaseapp.com",
+            projectId: "jumia-8f827",
+            storageBucket: "jumia-8f827.firebasestorage.app",
+            messagingSenderId: "506048228924",
+            appId: "1:506048228924:web:37d104efade80ba6225d39"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app)
+
+        const signup = async () =>{
+             displayEl.innerHTML = `<p>signing up ...</p>`
+            try {
+                const userInfo = await createUserWithEmailAndPassword(auth, emailVal.value, passwordVal.value)
+                console.log(userInfo);
+                window.location.href = `./signIn.html`
+            } catch (error) {
+                console.log(error);
+                if(error.code == "auth/email-already-in-use"){
+                    alert("email already used")
+                }else if(error.code == "auth/password-does-not-meet-requirements"){
+                    alert("Password does not meet requiresment")
+                } else{
+                    alert("Something went wrong. check your details.")
+                }
+            }finally{
+                console.log("DONE!");
+                displayEl.style.display = "none"
+            }
+        }
+
+        signupEl.addEventListener("click", signup)
+</script>
+</body>
+</html>
