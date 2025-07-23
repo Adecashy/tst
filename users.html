@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <script type="module">
+        import { app } from "./firebase.js"
+        import { getFirestore, collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"
+
+        const DB = getFirestore(app)
+        // reference: collection reference, document reference
+        const usersColRef = collection(DB, "users")
+
+        // CRUD
+        // CREATE
+        const addNewUser = async () => {
+            console.log("Adding user...")
+            try {
+                const docRef = await addDoc(usersColRef, {
+                    name: "Gucci shoe",
+                    price: 4000,
+                    category: "fashion"
+                })
+                console.log(docRef)
+                console.log(docRef.id)
+            } catch (error) {
+                console.log(error);
+            } finally {
+                console.log("DONE!")
+            }
+        }
+
+        // addNewUser()
+
+        // READ
+        const getUsers = async () => {
+            console.log("Fetching users...")
+            try {
+                const querySnapShot = await getDocs(usersColRef)
+                console.log(querySnapShot)
+                querySnapShot.forEach((doc) => {
+                    const docId = doc.id
+                    const data = doc.data()
+                    console.log(docId)
+                    console.log(data)
+                })
+            } catch (error) {
+                console.log(error);
+            } finally {
+                console.log("DONE!")
+            }
+        }
+
+        // getUsers()
+
+        // READ
+        const getSingleUser = async () => {
+            console.log("Fetching single user...")
+            try {
+                const docRef = doc(usersColRef, "Ogoqo6gXArqaMviUFy3u")
+                const querySnapShot = await getDoc(docRef)
+                console.log(querySnapShot.data())
+            } catch (error) {
+                console.log(error);
+            } finally {
+                console.log("DONE!")
+            }
+        }
+
+        // getSingleUser()
+
+        // U
+        const updateUser = async () => {
+            console.log("Updating users...")
+            try {
+                const docRef = doc(usersColRef, "Ogoqo6gXArqaMviUFy3u")
+                const querySnapShot = await updateDoc(docRef, {
+                    name: "SHola"
+                })
+                console.log(querySnapShot)
+            } catch (error) {
+                console.log(error);
+            } finally {
+                console.log("DONE!")
+            }
+        }
+
+        // updateUser()
+
+        const deleteUser = async () => {
+                console.log("Deleting users...")
+            try {
+                const docRef = doc(usersColRef, "quXpW2JBwN9F3iaPnrKJ")
+                await deleteDoc(docRef)
+            } catch (error) {
+                console.log(error);
+            } finally {
+                console.log("DONE!")
+            }
+        }
+
+        // deleteUser()
+
+    </script>
+</body>
+
+</html>
