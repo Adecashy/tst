@@ -25,7 +25,8 @@
         }
 
         input,
-        button {
+        button,
+        select {
             display: block;
             padding: 0.5rem 1rem;
         }
@@ -60,6 +61,18 @@
                 <input type="email" name="email" id="signup-email" placeholder="joe@gmail.com">
             </div>
             <div>
+                <label for="name">Name</label>
+                <input type="text"  id="signup-name" placeholder="J0hn d0e">
+            </div>
+            <div>
+                <label for="gender">Gender</label>
+                <select  id="signup-gender">
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                </select>
+            </div>
+            <div>
                 <label for="password">Password</label>
                 <input type="password" name="password" id="signup-password" placeholder="********">
             </div>
@@ -72,14 +85,22 @@
 
 
     <script type="module">
-        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"
+        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"
+        // here
+        import { getFirestore, setDoc, doc, collection} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"
         import { app } from "./firebase.js"
 
         const auth = getAuth(app)
+        // here
+        const DB = getFirestore(app)
+        // here
+        const usersColRef = collection(DB, "users")
 
         // ELEMENTS
         const signUpForm = document.getElementById("signup-form")
         const signUpEmail = document.getElementById("signup-email")
+        const signUpName = document.getElementById("signup-name")
+        const signUpGender = document.getElementById("signup-gender")
         const signUpPassword = document.getElementById("signup-password")
         const signUpButtonEl = document.getElementById("signup-btn")
         const errorMessageEl = document.getElementById("error-message")
@@ -89,10 +110,20 @@
             signUpButtonEl.disabled = true
             signUpButtonEl.textContent = "Loading..."
             try {
+                // signup to authentication
                 const userCredentials = await createUserWithEmailAndPassword(auth, signUpEmail.value, signUpPassword.value)
-                console.log(userCredentials.user)
+                // HERE: c0llect new user data
+                const newUser = {
+                    name: signUpName.value,
+                    email: signUpEmail.value,
+                    gender: signUpGender.value,
+                }
                 if(userCredentials.user){
                     sendEmailVerification(userCredentials.user)
+                    // HERE: save new user data t firest0re using setD0c
+                    const docRef = doc(usersColRef, userCredentials.user.uid) 
+                    await setDoc(docRef, newUser)
+                    window.location.href = "./signin.html"
                 }
             } catch (error) {
                 console.log(error)

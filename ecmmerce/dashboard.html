@@ -17,9 +17,12 @@
 
     <script type="module">
         import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"
+        import { getFirestore, collection, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"
         import { app } from "./firebase.js"
 
         const auth = getAuth(app)
+        const DB = getFirestore(app)
+        const usersColRef = collection(DB, "users")
 
         // ELEMENTS
         const emailEl = document.getElementById("email")
@@ -29,9 +32,10 @@
 
 
         onAuthStateChanged(auth, (user)=>{
-            console.log(user)
+            console.log(user.uid)
             if(user && user.emailVerified){
                 emailEl.textContent = user.displayName ||   user.email
+                fetchUser(user.uid)
             } else{
                 window.location.href = "./signin.html"
             }
@@ -40,6 +44,23 @@
         logoutBtnEl.addEventListener("click", ()=>{
             signOut(auth)
         })
+
+        // GET USER  Profile
+        const fetchUser = async (uid) => {
+            if(!uid){
+                alert("N0 id")
+                return
+            }
+            try {
+                const docRef = doc(usersColRef, uid)
+                const docSnap = await getDoc(docRef)
+                const userData = docSnap.data()
+                usernameEl.value = userData.name
+                emailEl.textContent = userData.name
+            } catch (error) {
+                console.log(error)
+            }
+        }
 
         const updateUserProfile = async () => {
             console.log("updating...")
@@ -62,6 +83,7 @@
             updateUserProfile()
         })
 
+        // 
     </script>
 </body>
 </html>

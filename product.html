@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        header{
+            background: rgb(111, 111, 196);
+            padding: 1rem;
+            color: greenyellow;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 5rem; 
+            padding-right: 8rem; 
+            align-items: center;
+        }
+        .container{
+            /* width: 90vw; */
+            max-width: 300px;
+            margin: 5rem;
+            border: 1px solid greenyellow;
+            padding: 1rem;
+            background: rgb(111, 111, 196);
+            color: greenyellow;
+            margin-top: 2rem;
+        }
+        .container div{
+            display: flex;
+            margin-bottom: 5px;
+            flex-direction: column;
+        }
+        input{
+            padding: 0.5rem;
+        }
+        button{
+            background: green;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            margin-top: 1rem;
+            border-radius: 2px;
+        }
+        #message{
+            color: #5e1616;
+            margin-top: 0.5rem;
+        }
+        .container-two{
+            margin-left: 5rem;
+            margin-top: -3rem;
+            font-weight: bold;
+        }
+        #display-product{
+            /* width: 90vw;  */
+            max-width: 900px;
+            margin: 2rem 5rem;
+            /* border: 1px solid; */
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 2rem;
+            /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.4); */
+            padding: 1rem;
+        }
+        .product-item{
+            border: 1px solid;
+            padding: 1rem;
+            margin: 1rem, auto;
+            border-radius: 10px;
+            width: 200px;
+        }
+        .product-item button{
+            background: #5e1616;
+
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>9JA FASHION STORE</h1>
+        <button id="get-product">Get Product</button>
+    </header>
+    
+    <div class="container">
+        <form id="product-form">
+            <div>
+                <label for="product-name">Product Name</label>
+                <input type="text" name="product-name" id="product-name">
+            </div>
+            <div>
+                <label for="category">Category</label>
+                <input type="text" name="category" id="category">
+            </div>
+            <div>
+                <label for="price">Price</label>
+                <input type="number" name="price" id="price">
+            </div>
+            <div id="message">
+
+            </div>
+            <button id="create-product">Add Product</button>
+        </form>
+    </div>
+    <div id="display-product">
+
+    </div>
+
+    <script type="module" src="./product.js"></script>
+</body>
+</html>
